@@ -99,6 +99,9 @@ SceneSceneChannel.shutdownStream = function()
 {
 	SceneSceneChannel.Player.Stop();
 	
+	empty_div = document.createElement("div");
+	empty_div.setAttribute('id', 'chat_box');
+	$("#chat_box").replaceWith(empty_div);
 	sf.scene.show('SceneBrowser');
 	sf.scene.hide('SceneChannel');
 	sf.scene.focus('SceneBrowser');
@@ -176,6 +179,7 @@ SceneSceneChannel.prototype.handleFocus = function () {
     SceneSceneChannel.Player.OnBufferingProgress = 'SceneSceneChannel.onBufferingProgress';
     
     SceneSceneChannel.hidePanel();
+	SceneSceneChannel.hideChat();
     $('#stream_info_name').text(SceneSceneBrowser.selectedChannel);
 	$("#stream_info_title").text("");
 	$("#stream_info_viewer").text("");
@@ -240,10 +244,10 @@ SceneSceneChannel.prototype.handleKeyDown = function (keyCode) {
 					SceneSceneChannel.qualityDisplay();
 				}
 				break;
-			case sf.key.LEFT:
+			case sf.key.RIGHT:
 				SceneSceneChannel.showPanel();
 				break;
-			case sf.key.RIGHT:
+			case sf.key.LEFT:
 				SceneSceneChannel.hidePanel();
 				break;
 			case sf.key.UP:
@@ -281,6 +285,14 @@ SceneSceneChannel.prototype.handleKeyDown = function (keyCode) {
 				sf.service.setVolumeControl(true);
 				break;
 			case sf.key.RED:
+				if (SceneSceneChannel.isChatShown())
+					{
+						SceneSceneChannel.hideChat();
+					}
+				else
+					{
+						SceneSceneChannel.showChat();
+					}
 				break;
 			case sf.key.GREEN:
 				break;
@@ -585,4 +597,19 @@ SceneSceneChannel.loadData = function()
 	SceneSceneChannel.loadingDataTimeout = 500;
 	
 	SceneSceneChannel.loadDataRequest();
+};
+
+SceneSceneChannel.isChatShown = function()
+{
+	return $("#chat_box").is(":visible");
+};
+
+SceneSceneChannel.hideChat = function()
+{
+	$("#chat_box").hide();
+};
+
+SceneSceneChannel.showChat = function()
+{
+	$("#chat_box").show();
 };

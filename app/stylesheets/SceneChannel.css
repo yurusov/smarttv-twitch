@@ -7,3 +7,22 @@
 	background-color : #090909;
 	background-image : url('');
 }
+#chat_box {
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-size: 13px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: normal;
+	position: absolute;
+	overflow: hidden;
+	color: #D3D3D3;
+	border-radius: 4px;
+	left: 75%; 
+	width: 25%; 
+	height: 100%; 
+	z-index: 2; 
+	background-color: rgba(0, 0, 0, 0.2);
+	/* width: calc(100% - 10px); */
+	/*height: calc(100% - 10px);*/
+}
+
