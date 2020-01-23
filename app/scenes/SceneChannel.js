@@ -98,7 +98,7 @@ function SceneSceneChannel() {
 SceneSceneChannel.shutdownStream = function()
 {
 	SceneSceneChannel.Player.Stop();
-	
+	Chat.unload();
 	empty_div = document.createElement("div");
 	empty_div.setAttribute('id', 'chat_box');
 	$("#chat_box").replaceWith(empty_div);
@@ -611,5 +611,6 @@ SceneSceneChannel.hideChat = function()
 
 SceneSceneChannel.showChat = function()
 {
+	Chat.load(SceneSceneBrowser.selectedChannel.toLowerCase());
 	$("#chat_box").show();
 };

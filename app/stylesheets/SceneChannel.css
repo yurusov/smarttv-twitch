@@ -26,3 +26,69 @@
 	/*height: calc(100% - 10px);*/
 }
 
+#chat_box.dark {
+	background: rgba(0,0,0,0.3);
+	color: #fff;
+}
+
+#chat_box.light {
+	background: rgba(255,255,255,0.3);
+	color: #000;
+}
+
+.nick {
+	font-weight: bold;
+}
+
+.tag {
+	display: inline-block;
+	text-indent: 21px;
+	background-position: 0 center;
+	background-repeat: no-repeat;
+	background-size: contain;
+	display: inline-block;
+	vertical-align: bottom;
+	height: 18px;
+	min-width: 18px;
+	width: expression(document.body.clientWidth < $width ? "18px":"auto");
+	padding: 0;
+	margin-right: 3px;
+	margin-bottom: -1px;
+	text-indent: -9999px;
+	border-radius: 2px;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	overflow: hidden;
+}
+
+.chat_line {
+	margin-left: 3px;
+	margin-right: 3px;
+	padding-top: 2px;
+	padding-bottom: 3px;
+	line-height: 16px;
+}
+
+.chat_line .message {
+	/*word-break: break-all;*/
+	word-wrap: break-word;
+}
+
+.chat_line .time_stamp {
+	display: none;
+	padding-right: 3px;
+}
+
+.emoticon {
+	margin-bottom: -7px;
+}
+
+.cheermote {
+	width: auto;
+	max-height: 28px;
+}
+
+.emoji {
+	width: 20px;
+	height: auto;
+}
