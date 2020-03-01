@@ -288,13 +288,13 @@ Chat = {
 		}
 
 		message = tokenizedMessage.join(' ');
-		message = twemoji.parse(message);
+		//message = twemoji.parse(message);
 
 		$formattedMessage.html(message);
 		$newLine.append($formattedMessage);
 
 		Chat.vars.queue.push($newLine.wrap('<div>').parent().html());
-	},
+},
 	load: function(channel) {
 		Chat.vars.channel = channel;
 
@@ -634,3 +634,278 @@ Chat = {
 		Chat.vars.bttvSocket.close();
 	}
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Chat = {
+// 	vars: {
+// 		queue: [],
+// 		//maxDisplayTime: getParameterByName('fade') === 'true' ? 30 : parseInt(getParameterByName('fade')),
+// 		queueTimer: setInterval(function() {
+// 			if(Chat.vars.queue.length > 0) {
+// 				var newLines = Chat.vars.queue.join('');
+// 				Chat.vars.queue = [];
+// 				$('#chat_box').append(newLines);
+
+// 				if(Chat.vars.preventClipping) {
+// 					var totalHeight = Chat.vars.max_height;
+// 					var currentHeight = $('#chat_box').outerHeight(true) + 5;
+// 					var count = 0;
+// 					var $chatLine, lineHeight;
+// 					while(currentHeight > totalHeight) {
+// 						$chatLine = $('.chat_line').eq(count);
+// 						lineHeight = $chatLine.height();
+
+// 						$chatLine.animate(
+// 							{
+// 								"margin-top": -lineHeight
+// 							},
+// 							100,
+// 							function() {
+// 								$(this).remove();
+// 							}
+// 						);
+
+// 						currentHeight -= lineHeight;
+// 						count++;
+// 					}
+// 					return;
+// 				}
+
+// 				$('#chat_box').scrollTop = $('#chat_box').scrollHeight;
+// 				var linesToDelete = $('#chat_box .chat_line').length - Chat.vars.max_messages;
+
+// 				if(linesToDelete > 0) {
+// 					for(var i=0; i<linesToDelete; i++) {
+// 						$('#chat_box .chat_line').eq(0).remove();
+// 					}
+// 				}
+// 			// } else if(getParameterByName('fade')) {
+// 			// 	var messagePosted = $('#chat_box .chat_line').eq(0).data('timestamp');
+// 			// 	if((Date.now()-messagePosted)/1000 >= Chat.vars.maxDisplayTime) {
+// 			// 		$('#chat_box .chat_line').eq(0).addClass('on_out').fadeOut(function() {
+// 			// 			$(this).remove();
+// 			// 		});
+// 			// 	}
+// 			// 
+// 			}
+// 		}, 250),
+// 		//style: getParameterByName('style').toLowerCase() || 'clear',
+// 		//theme: getParameterByName('theme').toLowerCase(),
+// 		//preventClipping: getParameterByName('prevent_clipping') === 'true' ? true : false,
+// 		themeNameCC: null,
+// 		socket: null,
+// 		bttvSocket: null,
+// 		channel: null,
+// 		max_messages: 100,
+// 		max_height: 720,
+// 		extraEmotes: {},
+// 		proEmotes: {},
+// 		spammers: [],
+// 		cheers: {}
+// 	},
+// 	unload: function() {
+// 		Chat.vars.socket.close();
+// 		//Chat.vars.bttvSocket.close();
+// 	},
+// 	parseTags: function(nick, tags) {
+// 			var defaultColors = ["#FF0000", "#0000FF", "#008000", "#B22222", "#FF7F50", "#9ACD32", "#FF4500", "#2E8B57", "#DAA520", "#D2691E", "#5F9EA0", "#1E90FF", "#FF69B4", "#8A2BE2", "#00FF7F"];
+	
+// 			var res = {
+// 				name: nick,
+// 				displayName: nick,
+// 				color: defaultColors[nick.charCodeAt(0) % 15],
+// 				emotes: null,
+// 				badges: [],
+// 				bits: 0
+// 			};
+	
+// 			if(tags['display-name'] && typeof tags['display-name'] === 'string') {
+// 				res.displayName = tags['display-name'];
+// 			}
+	
+// 			if(tags.color && typeof tags.color === 'string') {
+// 				res.color = tags.color;
+// 			}
+	
+// 			if(tags.emotes && typeof tags.emotes === 'string') {
+// 				res.emotes = tags.emotes;
+// 			}
+	
+// 			if(tags.badges && typeof tags.badges === 'string') {
+// 				res.badges = tags.badges.split(',').map(function(badge) {
+// 					badge = badge.split('/');
+// 					return {
+// 						type: badge[0],
+// 						version: badge[1]
+// 					};
+// 				});
+// 			}
+	
+// 			if(tags.bits) {
+// 				res.bits = +tags.bits;
+// 			}
+	
+// 			return res;
+// 		},
+// 	load: function(channel) {
+// 		Chat.vars.channel = channel;
+// 		var socket = new ReconnectingWebSocket('wss://irc-ws.chat.twitch.tv', 'irc', { reconnectInterval: 3000 });
+
+// 		socket.onopen = function(data) {
+// 			Chat.insert(null, null, "Connected.");
+// 			socket.send('PASS blah\r\n');
+// 			socket.send('NICK justinfan12345\r\n');
+// 			socket.send('CAP REQ :twitch.tv/commands twitch.tv/tags\r\n');
+// 			socket.send('JOIN #' + Chat.vars.channel + '\r\n');
+// 		};
+
+// 		socket.onclose = function() {
+// 			Chat.insert(null, null, "You were disconnected from the server.");
+// 		};
+
+// 		socket.onmessage = function(data) {
+// 			var message = window.parseIRC(data.data.trim());
+
+// 			if(!message.command) return;
+
+// 			switch(message.command) {
+// 				case "PING":
+// 					socket.send('PONG ' + message.params[0]);
+// 					return;
+// 				case "JOIN":
+// 					Chat.insert(null, null, "Joined channel: "+Chat.vars.channel+".");
+// 					return;
+// 				// case "CLEARCHAT":
+// 				// 	if(message.params[1]) Chat.clearChat(message.params[1]);
+// 				// 	return;
+// 				case "PRIVMSG":
+// 					if(message.params[0] !== '#' + channel || !message.params[1]) return;
+
+// 					var nick = message.prefix.split('@')[0].split('!')[0];
+
+// 			// 		// if(getParameterByName('bot_activity').toLowerCase() !== 'true') {
+// 			// 		// 	if(message.params[1].charAt(0) === '!') return;
+// 			// 		// 	if(/bot$/.test(nick)) return;
+// 			// 		// }
+
+// 					if (Chat.vars.spammers.indexOf(nick) > -1) return;
+
+// 					Chat.insert(nick, message.tags, message.params[1]);
+// 					return;
+// 			}
+// 			Chat.vars.socket = socket;
+// 		}
+		
+// 	},
+// 	insert: function(nick, tags, message) {
+// 		var nick = nick || "Chat",
+// 			userData = userData || {},
+// 			message = message || "",
+// 			action = action || false;
+
+// 		tags = tags ? Chat.parseTags(nick, tags) : {};
+
+// 		if(/^\x01ACTION.*\x01$/.test(message)) {
+// 			action = true;
+// 			message = message.replace(/^\x01ACTION/, '').replace(/\x01$/, '').trim();
+// 		}
+
+// 		var $newLine = $('<div></div>');
+// 		$newLine.addClass('chat_line');
+// 		$newLine.attr('data-nick', nick);
+// 		$newLine.attr('data-user-type', tags.userType);
+// 		$newLine.attr('data-timestamp', Date.now());
+
+// 		var $time = $('<span></span>');
+// 		$time.addClass('time_stamp')
+// 		$time.text(new Date().toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'));
+// 		$newLine.append($time);
+
+// 		// if(tags.badges) {
+// 		// 	tags.badges.forEach(function(badge) {
+// 		// 		var $tag = $('<span></span>');
+// 		// 		$tag.addClass(badge.type + '-' + badge.version);
+// 		// 		$tag.addClass('tag')
+// 		// 		$tag.html('&nbsp;');
+// 		// 		$newLine.append($tag);
+// 		// 	});
+// 		// }
+
+// 		if(
+// 			(!Chat.vars.themeNameCC && Chat.vars.style !== 'clear') ||
+// 			(Chat.vars.themeNameCC && Chat.vars.themeNameCC.enabled)
+// 		) {
+// 			// var bg = (Chat.vars.style !== 'clear') ? Chat.vars.style : Chat.vars.themeNameCC.kind;
+
+// 			// if(/^#[0-9a-f]+$/i.test(tags.color)) {
+// 			// 	while(calculateColorBackground(tags.color) !== bg) {
+// 			// 		tags.color = calculateColorReplacement(tags.color, calculateColorBackground(tags.color));
+// 			// 	}
+// 			// }
+// 		}
+
+// 		var $formattedUser = $('<span></span>');
+// 		$formattedUser.addClass('nick');
+// 		$formattedUser.css('color', tags.color);
+// 		$formattedUser.html(tags.displayName ? tags.displayName : nick);
+// 		$newLine.append($formattedUser);
+// 		action ? $newLine.append('&nbsp;') : $newLine.append('<span class="colon">:</span>&nbsp;');
+
+// 		var $formattedMessage = $('<span></span>');
+// 		$formattedMessage.addClass('message');
+// 		if(action) $formattedMessage.css('color', tags.color);
+
+// 		// var emotes = {};
+
+// 		// if(tags.emotes) {
+// 		// 	tags.emotes = tags.emotes.split('/');
+
+// 		// 	tags.emotes.forEach(function(emote) {
+// 		// 		emote = emote.split(':');
+
+// 		// 		if(!emotes[emote[0]]) emotes[emote[0]] = [];
+
+// 		// 		var replacements = emote[1].split(',');
+// 		// 		replacements.forEach(function(replacement) {
+// 		// 			replacement = replacement.split('-');
+
+// 		// 			emotes[emote[0]].push([ parseInt(replacement[0]) , parseInt(replacement[1]) ]);
+// 		// 		});
+// 		// 	});
+// 		// }
+
+// 		// var tokenizedMessage = Chat.emoticonize(message, emotes);
+
+// 		// for(var i=0; i<tokenizedMessage.length; i++) {
+// 		// 	if(typeof tokenizedMessage[i] === 'string') {
+// 		// 		tokenizedMessage[i] = Chat.extraMessageTokenize(tags, tokenizedMessage[i]);
+// 		// 	} else {
+// 		// 		tokenizedMessage[i] = tokenizedMessage[i][0];
+// 		// 	}
+// 		// }
+
+// 		// message = tokenizedMessage.join(' ');
+// 		// message = twemoji.parse(message);
+
+// 		$formattedMessage.html(message);
+// 		$newLine.append($formattedMessage);
+
+// 		Chat.vars.queue.push($newLine.wrap('<div>').parent().html());
+// },
+
+// }
